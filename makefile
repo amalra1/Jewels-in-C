@@ -1,26 +1,20 @@
+# Flags de compilação
 CC = gcc
 CFLAGS = -Wall -std=c99
 
 # Arquivos objeto:
-OBJ = lattes.o libcoleta.o libescrita.o levenshtein.o
+OBJ = jewels.o
 
-lattes: $(OBJ)
+jewels: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o lattes
+	
+jewels.o: jewels.c
+	$(CC) $(CFLAGS) -c jewels.c
 
-lattes.o: lattes.c
-	$(CC) $(CFLAGS) -c lattes.c
-
-libcoleta.o: libcoleta.c libcoleta.h levenshtein.h 
-	$(CC) $(CFLAGS) -c libcoleta.c
-
-libescrita.o: libescrita.c libescrita.h
-	$(CC) $(CFLAGS) -c libescrita.c
-
-levenshtein.o: levenshtein.c levenshtein.h
-	$(CC) $(CFLAGS) -c levenshtein.c
-
+# Limpa os arquivos objeto gerados
 clean:
 	rm *.o
 	
+# Limpa os arquivos objeto e o executável
 purge: clean
 	rm -f lattes
