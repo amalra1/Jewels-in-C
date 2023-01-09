@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
-#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 
 void must_init(bool test, const char *description)
@@ -45,6 +44,7 @@ typedef struct BOUNCER
     ALLEGRO_BITMAP* mysha;
 
     bool done = false, redraw = true;
+    float x, y;
 
     // Inicia a allegro
     must_init(al_init(), "allegro");
@@ -73,11 +73,6 @@ typedef struct BOUNCER
     font = al_create_builtin_font();
     must_init(font, "font");
 
-    // Inicia a imagem da mysha
-    must_init(al_init_image_addon(), "image addon");
-    mysha = al_load_bitmap("mysha.png");
-    must_init(mysha, "mysha");
-
     // Inicia os primitives
     must_init(al_init_primitives_addon(), "primitives");
 
@@ -86,6 +81,9 @@ typedef struct BOUNCER
     al_register_event_source(queue, al_get_display_event_source(disp));
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
+
+    x = 100;
+    y = 100;
     al_start_timer(timer);
 
     // Loop principal do Game
@@ -112,8 +110,8 @@ typedef struct BOUNCER
         if(redraw && al_is_event_queue_empty(queue))
         {
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_text(font, al_map_rgb(255, 255, 255), 290, 200, 0, "JEWELS");
-            al_draw_bitmap(mysha, 160, 240, 0);
+            al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X:%.1f Y:%.1f", x, y);
+            al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
             al_flip_display();
 
             redraw = false;
@@ -121,7 +119,6 @@ typedef struct BOUNCER
     }
 
     // Destroys
-    al_destroy_bitmap(mysha);
     al_destroy_font(font);
     al_destroy_display(disp);
     al_destroy_timer(timer);
