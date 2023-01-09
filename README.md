@@ -14,6 +14,10 @@ Release Date: XX/XX/XXXX
 
 ## Notes
 
+- Game ends when the player literally cannot do any more movements.
 - Save the highest scores in disk and show in a scoreboard;
 - On the first level there are 4 types of jewels: **yellow squares**, **purple thin crystals**, **green diamons**, **red squares** and **blue circles**. After the third level, **orange hexagons** start showing up.
-- A level ends when you complete a score limit, defined per level. Each time you advance a level, the jewels mix themselves in a random way, and a multiplier is increased (*1st level the multiplier is 1x, 2nd is 2x, and so on..*) 
+- A level ends when you complete a score limit, defined per level. Each time you advance a level, the jewels mix themselves in a random way, and a multiplier is increased (*1st level the multiplier is 1x, 2nd is 2x, and so on..*)
+- Random challenges will eventually show up on the screen, telling the player that if he connects a certain quantity of a certain type of figure, he will earn extra points to complete the bar.
+- Connecting 4 jewels will turn the 4 into 1 with a background shinning, connecting it to another 2 will generate extra points.
+- Connecting more than 4 jewels will create a **crystal jewel**, moving it anywhere will activate it, destroying all jewels from the previous crystal jewel colour.  
