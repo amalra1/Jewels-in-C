@@ -15,4 +15,5 @@ Release Date: XX/XX/XXXX
 ## Notes
 
 - Save the highest scores in disk and show in a scoreboard;
-- 
+- On the first level there are 4 types of jewels: **yellow squares**, **purple thin crystals**, **green diamons**, **red squares** and **blue circles**. After the third level, **orange hexagons** start showing up.
+- A level ends when you complete a score limit, defined per level. Each time you advance a level, the jewels mix themselves in a random way, and a multiplier is increased (*1st level the multiplier is 1x, 2nd is 2x, and so on..*) 
