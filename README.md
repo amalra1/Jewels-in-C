@@ -26,5 +26,5 @@ Release Date: XX/XX/XXXX
 
 -> Connecting 3 jewels: **10 points**  
 -> Connecting 4 jewels: **30 points**
--> Connecting 5 jewels: **100 points**
+-> Connecting 5 jewels: **100 points**  
 > if after connecting, other jewels connect by themselves, they value **10 more points** than the previous connection
