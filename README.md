@@ -2,6 +2,12 @@
 Graphic game 'Jewels' implemented using C language, with &lt;allegro.h> library.
 Developed by: Pedro Amaral Chapelin
 Release Date: XX/XX/XXXX
+
+## To-Do
+
+- [ ] Game menu;
+- [ ] Jewels designs;
+- [ ] First level;
   
   
 ## Game rules
