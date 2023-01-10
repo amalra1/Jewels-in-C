@@ -3,6 +3,9 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
+#define ScreenWidth 640
+#define ScreenHeight 480
+
 void must_init(bool test, const char *description)
 {
     if (test)
@@ -15,36 +18,14 @@ void must_init(bool test, const char *description)
 
 int main()
 {
-
-enum BOUNCER_TYPE 
-{
-    BT_HELLO = 0,
-    BT_MYSHA,
-    BT_TRIANGLE,
-    BT_RECTANGLE_1,
-    BT_RECTANGLE_2,
-    BT_CIRCLE,
-    BT_LINE1,
-    BT_LINE2,
-    BT_N
-};
-
-typedef struct BOUNCER
-{
-    float x, y;
-    float dx, dy;
-    int type;
-} BOUNCER;
-
     ALLEGRO_TIMER* timer;
     ALLEGRO_EVENT_QUEUE* queue;
     ALLEGRO_DISPLAY* disp;
     ALLEGRO_FONT* font;
     ALLEGRO_EVENT event;
-    ALLEGRO_BITMAP* mysha;
 
-    bool done = false, redraw = true;
-    float x, y;
+    bool done = false;
+    float x, y, speed = 5;
 
     // Inicia a allegro
     must_init(al_init(), "allegro");
@@ -56,7 +37,7 @@ typedef struct BOUNCER
     timer = al_create_timer(1.0 / 30.0);
     must_init(timer, "timer");
 
-    // Inicia a queue
+    // Inicia a queue de eventos
     queue = al_create_event_queue();
     must_init(queue, "queue");
 
@@ -66,7 +47,7 @@ typedef struct BOUNCER
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
 
     // Inicia o display
-    disp = al_create_display(640, 480);
+    disp = al_create_display(ScreenWidth, ScreenHeight);
     must_init(disp, "display");
 
     // Inicia as fontes
@@ -87,35 +68,36 @@ typedef struct BOUNCER
     al_start_timer(timer);
 
     // Loop principal do Game
-    while(1)
+    while(!done)
     {
         al_wait_for_event(queue, &event);
 
-        switch(event.type)
+        if (events.type = ALLEGRO_EVENT_KEY_DOWN)
         {
-            case ALLEGRO_EVENT_TIMER:
-                // game logic goes here.
-                redraw = true;
-                break;
-
-            case ALLEGRO_EVENT_KEY_DOWN:
-            case ALLEGRO_EVENT_DISPLAY_CLOSE:
-                done = true;
-                break;
+            switch (events.keyboard.keycode)
+            {
+                case ALLEGRO_KEY_DOWN
+                    y += speed;
+                    break;
+                case ALLEGRO_KEY_UP
+                    y -= speed;
+                    break;
+                case ALLEGRO_KEY_LEFT
+                    x -= speed;
+                    break;
+                case ALLEGRO_KEY_RIGHT
+                    x += speed;
+                    break;
+                case ALLEGRO_KEY_ESCAPE
+                    done = true;
+                    break;
+            }            
         }
 
-        if(done)
-            break;
-
-        if(redraw && al_is_event_queue_empty(queue))
-        {
-            al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X:%.1f Y:%.1f", x, y);
-            al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
-            al_flip_display();
-
-            redraw = false;
-        }
+        al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X:%.1f Y:%.1f", x, y);
+        al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
+        al_flip_display();
+        al_clear_to_color(al_map_rgb(0, 0, 0));
     }
 
     // Destroys
