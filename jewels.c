@@ -23,10 +23,14 @@ int main()
     ALLEGRO_DISPLAY* disp;
     ALLEGRO_FONT* font;
     ALLEGRO_EVENT event;
-
-    bool done = false;
-    float x, y, speed = 5;
+    ALLEGRO_KEYBOARD_STATE ks;
+    
+    enum Direction { UP, DOWN, RIGHT, LEFT };
     const float FPS = 60.0;
+
+    bool done = false, draw = false;
+    float x, y, speed = 5;
+    int dir;
 
     // Inicia a allegro
     must_init(al_init(), "allegro");
@@ -60,45 +64,57 @@ int main()
 
     // Registra os eventos
     al_register_event_source(queue, al_get_keyboard_event_source());
-    al_register_event_source(queue, al_get_display_event_source(disp));
     al_register_event_source(queue, al_get_timer_event_source(timer));
+    al_register_event_source(queue, al_get_display_event_source(disp));
 
 
     x = 100;
     y = 100;
+    dir = DOWN;
     al_start_timer(timer);
 
     // Loop principal do Game
     while(!done)
     {
+        // Fase de entrada
         al_wait_for_event(queue, &event);
-
-        if (events.type == ALLEGRO_EVENT_KEY_DOWN)
+        
+        if (events.type == ALLEGRO_EVENT_KEY_UP)
         {
             switch (events.keyboard.keycode)
             {
-                case ALLEGRO_KEY_DOWN
-                    y += speed;
-                    break;
-                case ALLEGRO_KEY_UP
-                    y -= speed;
-                    break;
-                case ALLEGRO_KEY_LEFT
-                    x -= speed;
-                    break;
-                case ALLEGRO_KEY_RIGHT
-                    x += speed;
-                    break;
-                case ALLEGRO_KEY_ESCAPE
+                case ALLEGRO_KEY_ESCAPE:
                     done = true;
-                    break;
-            }            
-        }
+            }
+         }
 
-        al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X:%.1f Y:%.1f", x, y);
-        al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
-        al_flip_display();
-        al_clear_to_color(al_map_rgb(0, 0, 0));
+        // Fase de atualizar
+        if (events.type == ALLEGRO_EVENT_TIMER)
+        {
+            al_get_keyboard_state(&ks);
+            
+            if (al_key_down(&ks, ALLEGRO_KEY_UP))
+                y -= speed;
+            else if (al_key_down(&ks, ALLEGRO_KEY_DOWN))
+                y += speed;
+            else if (al_key_down(&ks, ALLEGRO_KEY_LEFT))
+                x -= speed;
+            else if (al_key_down(&ks, ALLEGRO_KEY_RIGHT))
+                x += speed;
+            
+            draw = true;
+        }
+        
+        // Fase de imprimir
+        if (draw)
+        {
+            draw = false;
+            
+            al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X:%.1f Y:%.1f", x, y);
+            al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
+            al_flip_display();
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+        }
     }
 
     // Destroys
