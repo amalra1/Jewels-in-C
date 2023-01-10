@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
-#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
 
 #define ScreenWidth 640
 #define ScreenHeight 480
@@ -15,7 +15,6 @@ void must_init(bool test, const char *description)
     exit(1);
 }
 
-
 int main()
 {
     ALLEGRO_TIMER* timer;
@@ -23,20 +22,28 @@ int main()
     ALLEGRO_DISPLAY* disp;
     ALLEGRO_FONT* font;
     ALLEGRO_EVENT event;
-    ALLEGRO_KEYBOARD_STATE ks;
+    ALLEGRO_BITMAP* img;
     
-    enum Direction { UP, DOWN, RIGHT, LEFT };
     const float FPS = 60.0;
 
     bool done = false, draw = false;
     float x, y, speed = 5;
-    int dir;
 
     // Inicia a allegro
     must_init(al_init(), "allegro");
 
+    // Inicia a captura das imagens
+    must_init(al_init_image_addon(), "images");
+
     // Inicia a captura do teclado
     must_init(al_install_keyboard(), "keyboard");
+
+    // Inicia a captura do mouse
+    must_init(al_install_mouse(), "mouse");
+
+    // Inicia a imagem
+    img = al_load_bitmap("small_jewels.png");
+    must_init(img, "imagem");
 
     // Inicia o timer
     timer = al_create_timer(1.0 / FPS);
@@ -46,11 +53,6 @@ int main()
     queue = al_create_event_queue();
     must_init(queue, "queue");
 
-    // Opcoes para fluidez de imagens
-    al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-    al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
-    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR);
-
     // Inicia o display
     disp = al_create_display(ScreenWidth, ScreenHeight);
     must_init(disp, "display");
@@ -59,62 +61,56 @@ int main()
     font = al_create_builtin_font();
     must_init(font, "font");
 
-    // Inicia os primitives
-    must_init(al_init_primitives_addon(), "primitives");
-
     // Registra os eventos
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_timer_event_source(timer));
     al_register_event_source(queue, al_get_display_event_source(disp));
+    al_register_event_source(queue, al_get_mouse_event_source());
 
+    al_hide_mouse_cursor(disp); 
 
-    x = 100;
-    y = 100;
-    dir = DOWN;
+    // Alguns 'defines' para cores
+    ALLEGRO_COLOR red = al_map_rgb(255, 0, 0);
+    ALLEGRO_COLOR green = al_map_rgb(0, 255, 0);
+    ALLEGRO_COLOR blue = al_map_rgb(0, 0, 255);
+    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+    ALLEGRO_COLOR black = al_map_rgb(0, 0, 0);
+
+    // Define a posicao do display na tela
+    al_set_window_position(disp, 400, 250);
+
     al_start_timer(timer);
 
-    // Loop principal do Game
-    while(!done)
+    // Loop principal do jogo
+    while (true)
     {
-        // Fase de entrada
-        al_wait_for_event(queue, &event);
-        
-        if (events.type == ALLEGRO_EVENT_KEY_UP)
-        {
-            switch (events.keyboard.keycode)
-            {
-                case ALLEGRO_KEY_ESCAPE:
-                    done = true;
-            }
-         }
+        ///
+        // Testando
+        ///
 
-        // Fase de atualizar
-        if (events.type == ALLEGRO_EVENT_TIMER)
-        {
-            al_get_keyboard_state(&ks);
-            
-            if (al_key_down(&ks, ALLEGRO_KEY_UP))
-                y -= speed;
-            else if (al_key_down(&ks, ALLEGRO_KEY_DOWN))
-                y += speed;
-            else if (al_key_down(&ks, ALLEGRO_KEY_LEFT))
-                x -= speed;
-            else if (al_key_down(&ks, ALLEGRO_KEY_RIGHT))
-                x += speed;
-            
-            draw = true;
-        }
+        int i;
+
         
-        // Fase de imprimir
-        if (draw)
+        
+        for(i=0;i < 10;i++) 
         {
-            draw = false;
+            al_clear_to_color(white);
+            al_draw_bitmap(img, 0, 0, 0);
             
-            al_draw_textf(font, al_map_rgb(255, 255, 255), 0, 0, 0, "X:%.1f Y:%.1f", x, y);
-            al_draw_filled_rectangle(x, y, x + 10, y + 10, al_map_rgb(255, 0, 0));
             al_flip_display();
-            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_rest(1.0);
+            al_clear_to_color(white);
+            al_draw_bitmap(img, 0, 10, 0);
+            
+            al_flip_display();
+            al_rest(1.0);
         }
+
+        al_clear_to_color(black);
+        al_flip_display();
+
+        al_rest(1.0);
+
     }
 
     // Destroys
@@ -122,6 +118,7 @@ int main()
     al_destroy_display(disp);
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
+    al_destroy_bitmap(img);
 
     return 0;
 }
