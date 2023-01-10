@@ -72,7 +72,7 @@ int main()
     {
         al_wait_for_event(queue, &event);
 
-        if (events.type = ALLEGRO_EVENT_KEY_DOWN)
+        if (events.type == ALLEGRO_EVENT_KEY_DOWN)
         {
             switch (events.keyboard.keycode)
             {
