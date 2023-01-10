@@ -26,6 +26,7 @@ int main()
 
     bool done = false;
     float x, y, speed = 5;
+    const float FPS = 60.0;
 
     // Inicia a allegro
     must_init(al_init(), "allegro");
@@ -34,7 +35,7 @@ int main()
     must_init(al_install_keyboard(), "keyboard");
 
     // Inicia o timer
-    timer = al_create_timer(1.0 / 30.0);
+    timer = al_create_timer(1.0 / FPS);
     must_init(timer, "timer");
 
     // Inicia a queue de eventos
