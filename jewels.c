@@ -1,11 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 
 #define ScreenWidth 640
 #define ScreenHeight 480
+#define ROWS 8
+#define COLS 8
+#define NUM_JEWEL_TYPES 4
 
+// Funcao que verifica as inicializacoes
 void must_init(bool test, const char *description)
 {
     if (test)
@@ -15,8 +20,60 @@ void must_init(bool test, const char *description)
     exit(1);
 }
 
-int main()
+// Funcao que inicializa a matriz que contera as jewels
+// Cada campo da matriz recebera um numero, indicando
+// o tipo da joia
+void board_init(int board[ROWS][COLS])
 {
+    int i, j;
+
+    for (i = 0; i < ROWS; i++) 
+    {
+        for (j = 0; j < COLS; i++)
+            board[i][j] = rand() % NUM_JEWEL_TYPES;
+    }
+}
+
+void drawMainMenu() {}
+void drawGameplay() {}
+void drawPauseMenu() {}
+void drawGameOver() {}
+
+// Funcao que realiza a parte de 'output' da logica do game
+void draw(GameState state) 
+{
+    int i, j;
+
+    al_clear_to_color(black);
+    for (i = 0; i < ROWS; i++) 
+    {
+        for (j = 0; j < COLS; i++)
+            al_draw_textf(font, al_map_rgb(255, 255, 255), i, j, 0, "%d", board[i][j]);   
+    }
+
+    /*switch (state) 
+    {
+        case MAIN_MENU:
+            drawMainMenu();
+            break;
+        case GAMEPLAY:
+            drawGameplay();
+            break;
+        case PAUSE:
+            drawPauseMenu();
+            break;
+        case GAME_OVER:
+            drawGameOver();
+            break;
+    }*/
+    al_flip_display();
+}
+
+int main()
+{   
+    enum GameState { MAIN_MENU, GAMEPLAY, PAUSE, GAME_OVER };
+    GameState currentState;
+
     ALLEGRO_TIMER* timer;
     ALLEGRO_EVENT_QUEUE* queue;
     ALLEGRO_DISPLAY* disp;
@@ -28,6 +85,8 @@ int main()
 
     bool done = false, draw = false;
     float x, y, speed = 5;
+    int board[ROWS][COLS];
+    int i, j;
 
     // Inicia a allegro
     must_init(al_init(), "allegro");
@@ -79,38 +138,33 @@ int main()
     // Define a posicao do display na tela
     al_set_window_position(disp, 400, 250);
 
-    al_start_timer(timer);
+    // Estado inicial = menu
+    currentState = MAIN_MENU;
+
+    // Iniciando a matriz
+    board_init(board);
+
+    //al_start_timer(timer);
 
     // Loop principal do jogo
-    while (true)
+    while (!done) 
     {
-        ///
-        // Testando
-        ///
-
-        int i;
-
-        
-        
-        for(i=0;i < 10;i++) 
+        switch (currentState) 
         {
-            al_clear_to_color(white);
-            al_draw_bitmap(img, 0, 0, 0);
-            
-            al_flip_display();
-            al_rest(1.0);
-            al_clear_to_color(white);
-            al_draw_bitmap(img, 0, 10, 0);
-            
-            al_flip_display();
-            al_rest(1.0);
+            case MAIN_MENU:
+                updateMainMenu();
+                break;
+            case GAMEPLAY:
+                updateGameplay();
+                break;
+            case PAUSE:
+                updatePauseMenu();
+                break;
+            case GAME_OVER:
+                updateGameOver();
+                break;
         }
-
-        al_clear_to_color(black);
-        al_flip_display();
-
-        al_rest(1.0);
-
+        draw(currentState);
     }
 
     // Destroys
